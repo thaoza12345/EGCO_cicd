@@ -1,22 +1,18 @@
-name: Node.js CI
+const http = require('http'); 
+const requestListener = (req, res) => { 
+res.statusCode = 200; 
+res.setHeader('Content-Type', 'text/plain'); 
+res.end('Hello World from DevOps Lab!\n'); 
+}; 
+const app = http.createServer(requestListener); 
+// We only listen if this file is run directly, not when imported by 
+tests 
+if (require.main === module) { 
+const port = process.env.PORT || 3000; 
+app.listen(port, () => { 
+console.log(`Server running at port ${port}`); 
+}); 
+} 
+ 
+module.exports = app; // Export for testing 
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-
-    - run: npm install
-    - run: echo "Tests would run here..."
